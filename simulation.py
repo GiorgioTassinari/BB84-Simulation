@@ -137,18 +137,23 @@ def compare_bases(result_1,result_2):
     
     Returns
     -------
-    shared_bases: DataFrame
-        Contains only the measurements in which both the sender and the 
-        receiver chose to use the same base for the measurement.
+    shared_data_indexes: list
+        Contains the indexes of the measurements in which both the 
+        sender and the  receiver chose to use the same base for the
+        measurement.
     """
     base_1=result_1.base
     base_2=result_2.base
+    #shared results, equal if there are no errors or eavesdroppers
     shared_data = []
+    #contains the indexes of shared results, to check for errors
+    shared_data_indexes = []
     print("The measurements done on the same bases are highlighted in green")
     for i,letter in enumerate(base_1):
         if base_1[i]==base_2[i]:
-            #when there is a match it gets added it to the list
+            #when there is a match it gets added it to the shared lists
             shared_data.append(result_1.iloc[i].tolist())
+            shared_data_indexes.append(result_1.index[i])
             print(f"{Colors.GREEN}"+letter,end="")
         else:
             print(f"{Colors.RED}"+letter,end="")
@@ -160,10 +165,11 @@ def compare_bases(result_1,result_2):
             print(f"{Colors.RED}"+letter,end="")
     print(f"{Colors.END}",end="")
     print("")
-    print("Now A and B have a shared series of bases with the same results")
+    #create a DataFrame of the results on the shared bases
     shared_bases=pd.DataFrame(shared_data, columns=['base', 'value'])
+    print("Now A and B have a shared series of bases with the same results")
     print(shared_bases.transpose())
-    return shared_bases
+    return shared_data_indexes
 
 def run(n=10, sender="Alice", receiver="Bob"):
     """
@@ -182,8 +188,8 @@ def run(n=10, sender="Alice", receiver="Bob"):
         None
     """
     sender_result=prepare_particles(n,sender)
-    reveiver_result=receive_particles(sender_result, receiver)
-    #after enough measurements are done, Alice and Bob share their bases
-    shared_bases = compare_bases(sender_result,reveiver_result)
+    receiver_result=receive_particles(sender_result, receiver)
+    #after enough measurements, Alice and Bob share their bases
+    shared_bases = compare_bases(sender_result,receiver_result)
 
 run()
