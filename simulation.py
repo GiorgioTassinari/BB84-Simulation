@@ -176,9 +176,12 @@ def compare_bases(result_1,result_2):
     print(shared_bases.set_index('bases').transpose())
     return shared_data_indexes
 
-def compare_keys(shared_indexes, sender, receiver, percentage=1):
+def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     """
-    Compare the values in the specified indexes
+    Compare the values of the measurements done in the specified
+    indexes. The numbers of values that get compared can be modiefied,
+    based on a percentage. Also prints the number of bits that are
+    selected.
 
     Parameters
     ----------
@@ -189,7 +192,7 @@ def compare_keys(shared_indexes, sender, receiver, percentage=1):
         receiver : DataFrame
             The complete result of the receiver to compare
         percentage : int, optional
-            Percentage of bits that will be compared, defaults to 100
+            Percentage of bits that will be compared, defaults to 0.5
 
     Returns
     -------
@@ -198,25 +201,29 @@ def compare_keys(shared_indexes, sender, receiver, percentage=1):
     """
     sender_values = sender.value
     receiver_values = receiver.value
+    #the shared indexes get randomly selected to be shared
     samples_number = round(percentage*len(shared_indexes))
-    chosen_bits = random.sample(shared_indexes,samples_number).sort()
-    print("sample number is",samples_number,"bits are",chosen_bits)
-    #maximum number of result matches when done with the same base
+    chosen_bits = random.sample(shared_indexes,samples_number)
+    chosen_bits.sort()
+    print(f"The sample number is {samples_number} out of {len(shared_indexes)}"
+          f", the bits that are being compared are in positions {chosen_bits}")
+    #maximum possible number of matches of the selected bits
     max_matches=len(chosen_bits)
     #this will incrase by one every time a match is found
     matches = 0
-    #index used for the list of indexes
+    #index used looping over the list of bits
     a = 0
     for i,_ in enumerate(sender_values):
         if i==chosen_bits[a] and sender_values[i] == receiver_values[i]:
             matches += 1
+            #this allows to continue looping on the list of indexes
             a += 1
             #to avoid going of bounds in the chosen_bits list
             if matches == max_matches:
                 break
-    matching_percentage = matches/max_matches*100
+    matching_percentage = matches/max_matches
     print(f"The matching percentage between the two results is "
-          f"{matching_percentage}""%")
+          f"{matching_percentage*100}""%")
     return matching_percentage
 
 def run(n=1000, sender="Alice", receiver="Bob"):
