@@ -2,6 +2,7 @@
 This module cointains all the functions to simulate the BB84 protocol
 """
 from numpy.random import randint
+import random
 import pandas as pd
 
 #changes a setting in pandas to show a long dataframe without newlines
@@ -175,7 +176,7 @@ def compare_bases(result_1,result_2):
     print(shared_bases.set_index('bases').transpose())
     return shared_data_indexes
 
-def compare_keys(shared_indexes, sender, receiver, compare_percentage=100):
+def compare_keys(shared_indexes, sender, receiver, percentage=1):
     """
     Compare the values in the specified indexes
 
@@ -187,7 +188,7 @@ def compare_keys(shared_indexes, sender, receiver, compare_percentage=100):
             The complete result of the sender to compare
         receiver : DataFrame
             The complete result of the receiver to compare
-        compare_percentage : int, optional
+        percentage : int, optional
             Percentage of bits that will be compared, defaults to 100
 
     Returns
@@ -197,17 +198,20 @@ def compare_keys(shared_indexes, sender, receiver, compare_percentage=100):
     """
     sender_values = sender.value
     receiver_values = receiver.value
+    samples_number = round(percentage*len(shared_indexes))
+    chosen_bits = random.sample(shared_indexes,samples_number).sort()
+    print("sample number is",samples_number,"bits are",chosen_bits)
     #maximum number of result matches when done with the same base
-    max_matches=len(shared_indexes)
+    max_matches=len(chosen_bits)
     #this will incrase by one every time a match is found
     matches = 0
     #index used for the list of indexes
     a = 0
     for i,_ in enumerate(sender_values):
-        if i==shared_indexes[a] and sender_values[i] == receiver_values[i]:
+        if i==chosen_bits[a] and sender_values[i] == receiver_values[i]:
             matches += 1
             a += 1
-            #to avoid going of bounds in the shared_indexes list
+            #to avoid going of bounds in the chosen_bits list
             if matches == max_matches:
                 break
     matching_percentage = matches/max_matches*100
