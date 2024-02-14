@@ -166,9 +166,9 @@ def compare_bases(result_1,result_2):
     print(f"{Colors.END}",end="")
     print("")
     #create a DataFrame of the results on the shared bases
-    shared_bases=pd.DataFrame(shared_data, columns=['base', 'value'])
-    print("Now A and B have a shared series of bases with the same results")
-    print(shared_bases.transpose())
+    shared_bases=pd.DataFrame(shared_data, columns=['bases', 'key'])
+    print("Now A and B should have a shared key based on the shared bases")
+    print(shared_bases.set_index('bases').transpose())
     return shared_data_indexes
 
 def run(n=10, sender="Alice", receiver="Bob"):
