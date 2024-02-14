@@ -171,6 +171,44 @@ def compare_bases(result_1,result_2):
     print(shared_bases.set_index('bases').transpose())
     return shared_data_indexes
 
+def compare_keys(shared_indexes, sender, receiver):
+    """
+    Compare the values in the specified indexes
+
+    Parameters
+    ----------
+        shared_indexes : list
+            A list of integers indicating what measurements to compare
+        sender : DataFrame
+            The complete result of the sender to compare
+        receiver : DataFrame
+            The complete result of the receiver to compare
+
+    Returns
+    -------
+        matching_percentage: float
+            The percentage of values that matched in the indexes chosen
+    """
+    sender_values = sender.value
+    receiver_values = receiver.value
+    #maximum number of result matches when done with the same base
+    max_matches=len(shared_indexes)
+    #this will incrase by one every time a match is found
+    matches = 0
+    #index used for the list of indexes
+    a = 0
+    for i,_ in enumerate(sender_values):
+        if i==shared_indexes[a] and sender_values[i] == receiver_values[i]:
+            matches += 1
+            a += 1
+            #to avoid going of bounds in the shared_indexes list
+            if matches == max_matches:
+                break
+    matching_percentage = matches/max_matches*100
+    print(f"The matching percentage between the two results is "
+          f"{matching_percentage}""%")
+    return matching_percentage
+
 def run(n=10, sender="Alice", receiver="Bob"):
     """
     Run the complete simulation.
@@ -178,7 +216,7 @@ def run(n=10, sender="Alice", receiver="Bob"):
     Parameters
     ----------
         n : int, optional
-            How many particles will be measured
+            How many particles will be used
         sender : string, optional
             The name that will be used in printing for the sender
         receiver : string, optional
@@ -189,7 +227,9 @@ def run(n=10, sender="Alice", receiver="Bob"):
     """
     sender_result=prepare_particles(n,sender)
     receiver_result=receive_particles(sender_result, receiver)
-    #after enough measurements, Alice and Bob share their bases
+    #after the measurements are done, Alice and Bob share their bases
     shared_bases = compare_bases(sender_result,receiver_result)
+    #they also compare a certain number of random bits of the key
+    compare_keys(shared_bases, sender_result, receiver_result)
 
 run()
