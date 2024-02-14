@@ -1,9 +1,10 @@
 """
 This module cointains all the functions to simulate the BB84 protocol
 """
-from numpy.random import randint
 import random
+from numpy.random import randint
 import pandas as pd
+import math
 
 #changes a setting in pandas to show a long dataframe without newlines
 pd.set_option('display.expand_frame_repr', False)
@@ -172,7 +173,7 @@ def compare_bases(result_1,result_2):
     #create a DataFrame of the results on the shared bases
     shared_bases=pd.DataFrame(shared_data, columns=['bases', 'key'])
     print("Now A and B should have a shared key based on the shared bases")
-    print(f"The keys {len(shared_data_indexes)} bits long")
+    print(f"The key is {len(shared_data_indexes)} bits long")
     print(shared_bases.set_index('bases').transpose())
     return shared_data_indexes
 
@@ -180,8 +181,9 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     """
     Compare the values of the measurements done in the specified
     indexes. The numbers of values that get compared can be modiefied,
-    based on a percentage. Also prints the number of bits that are
-    selected.
+    based on a percentage. Also prints the details of the comparison and
+    gives a comment to explain if the creation of the key was successful
+    or not.
 
     Parameters
     ----------
@@ -196,8 +198,7 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
 
     Returns
     -------
-        matching_percentage: float
-            The percentage of values that matched in the indexes chosen
+        None
     """
     sender_values = sender.value
     receiver_values = receiver.value
@@ -205,8 +206,10 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     samples_number = round(percentage*len(shared_indexes))
     chosen_bits = random.sample(shared_indexes,samples_number)
     chosen_bits.sort()
-    print(f"The sample number is {samples_number} out of {len(shared_indexes)}"
-          f", the bits that are being compared are in positions {chosen_bits}")
+    print(f"The sender and the receiver decided to take {percentage*100}% of "
+          f"the bits of their key to check for eaversdroppers. The sample is "
+          f"done randomly and contains {samples_number} out of "
+          f"{len(shared_indexes)} bits of the complete key.")
     #maximum possible number of matches of the selected bits
     max_matches=len(chosen_bits)
     #this will incrase by one every time a match is found
@@ -224,7 +227,12 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     matching_percentage = matches/max_matches
     print(f"The matching percentage between the two results is "
           f"{matching_percentage*100}""%")
-    return matching_percentage
+    #once the comparing is done, we see if we are satisfied with the key
+    if math.isclose(matching_percentage,1):
+        print("There were no eavesdroppers nor quantum mistakes!")
+    else:
+        print("There were too many mistakes, somebody eavesdropped!")
+    return
 
 def run(n=1000, sender="Alice", receiver="Bob"):
     """
@@ -248,5 +256,5 @@ def run(n=1000, sender="Alice", receiver="Bob"):
     shared_bases = compare_bases(sender_result,receiver_result)
     #they also compare a certain number of random bits of the key
     compare_keys(shared_bases, sender_result, receiver_result)
-
+    
 run()
