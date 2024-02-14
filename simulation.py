@@ -4,6 +4,9 @@ This module cointains all the functions to simulate the BB84 protocol
 from numpy.random import randint
 import pandas as pd
 
+#changes a setting in pandas to show a long dataframe without newlines
+pd.set_option('display.expand_frame_repr', False)
+
 #To highlight matches in pairs of bases, different colors are useful
 class Colors:
     """Class that contains colors used in printing for visual clarity"""
@@ -168,10 +171,11 @@ def compare_bases(result_1,result_2):
     #create a DataFrame of the results on the shared bases
     shared_bases=pd.DataFrame(shared_data, columns=['bases', 'key'])
     print("Now A and B should have a shared key based on the shared bases")
+    print(f"The keys {len(shared_data_indexes)} bits long")
     print(shared_bases.set_index('bases').transpose())
     return shared_data_indexes
 
-def compare_keys(shared_indexes, sender, receiver):
+def compare_keys(shared_indexes, sender, receiver, compare_percentage=100):
     """
     Compare the values in the specified indexes
 
@@ -183,6 +187,8 @@ def compare_keys(shared_indexes, sender, receiver):
             The complete result of the sender to compare
         receiver : DataFrame
             The complete result of the receiver to compare
+        compare_percentage : int, optional
+            Percentage of bits that will be compared, defaults to 100
 
     Returns
     -------
@@ -209,7 +215,7 @@ def compare_keys(shared_indexes, sender, receiver):
           f"{matching_percentage}""%")
     return matching_percentage
 
-def run(n=10, sender="Alice", receiver="Bob"):
+def run(n=1000, sender="Alice", receiver="Bob"):
     """
     Run the complete simulation.
     
@@ -218,9 +224,9 @@ def run(n=10, sender="Alice", receiver="Bob"):
         n : int, optional
             How many particles will be used
         sender : string, optional
-            The name that will be used in printing for the sender
+            The name used in printing for the sender, default Alice
         receiver : string, optional
-            The name that will be used in printing for the receiver
+            The name used in printing for the receiver, default Bob
     Returns
     -------
         None
