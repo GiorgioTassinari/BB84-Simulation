@@ -2,9 +2,9 @@
 This module cointains all the functions to simulate the BB84 protocol
 """
 import random
+import math
 from numpy.random import randint
 import pandas as pd
-import math
 
 #changes a setting in pandas to show a long dataframe without newlines
 pd.set_option('display.expand_frame_repr', False)
@@ -120,7 +120,7 @@ def receive_particles(received_states, name):
             values.append(received_states.value[i])
         #if the base chosen is different, the result will be random
         else: values.append(randint(0,2))
-    result = pd.DataFrame({'base': bases, 'value': values}, 
+    result = pd.DataFrame({'base': bases, 'value': values},
                           columns=['base', 'value'])
     print(name,"too chose a random sequence of orthogonal bases and obtained "
           "these results in his measurements")
@@ -234,7 +234,8 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
         print("There were too many mistakes, somebody eavesdropped!")
     return
 
-def run(n=1000, sender="Alice", receiver="Bob"):
+def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
+        eavesdropping=False):
     """
     Run the complete simulation.
     
@@ -246,15 +247,24 @@ def run(n=1000, sender="Alice", receiver="Bob"):
             The name used in printing for the sender, default Alice
         receiver : string, optional
             The name used in printing for the receiver, default Bob
+        eavesdropper : string, optional
+            The name used in printing for the eavesdropper, default Eve
+        eavesdropping : bool, optional
+            Flag to start the simulation with or without eavesdropping
+
     Returns
     -------
         None
     """
     sender_result=prepare_particles(n,sender)
-    receiver_result=receive_particles(sender_result, receiver)
+    eavsdropper_result=receive_particles(sender_result, eavesdropper)
+    if eavesdropping is False:
+        receiver_result=receive_particles(sender_result, receiver)
+    elif eavesdropping is True:
+        receiver_result=receive_particles(eavsdropper_result, receiver)
     #after the measurements are done, Alice and Bob share their bases
     shared_bases = compare_bases(sender_result,receiver_result)
-    #they also compare a certain number of random bits of the key
+    #then they also compare a certain number of random bits of the key
     compare_keys(shared_bases, sender_result, receiver_result)
     
 run()
