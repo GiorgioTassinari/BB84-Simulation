@@ -9,10 +9,14 @@ import sys
 import matplotlib.pyplot as plt
 import simulation
 
+#how many time each simulation will be run to calculate the failure rate
 NUMBER_OF_RUNS = 5
+#max number of particles used in a simulation run
 PARTICLE_NUMBER_UPPER_RANGE = 100
 
+#list that will contain all the failing rates calculated
 failure_rates = []
+#list to graph the number of particles used in each run of simulation
 number_of_particles = list(range(1,PARTICLE_NUMBER_UPPER_RANGE))
 
 class HiddenPrints:
@@ -52,9 +56,17 @@ def simulate_fixed(number_of_runs, particles):
     failure_rate=number_of_detections/number_of_runs
     return failure_rate
 
-for i,number in enumerate(number_of_particles):
-    failure_rates.append(simulate_fixed(NUMBER_OF_RUNS,number))
-    print(f"Simulation is at {i} out of {len(number_of_particles)}",end="\r")
+def simulate_multiple():
+    """
+    Run the simulation multiple times based on the 'NUMBER_OF_RUNS'
+    global variable, increasing the number of particles used starting
+    from 1 up to PARTICLE_NUMBER_UPPER_RANGE each time.
+    Updates the 'failure_rates' list with the results of the simulations
+    """
+    for i,number in enumerate(number_of_particles):
+        failure_rates.append(simulate_fixed(NUMBER_OF_RUNS,number))
+        #progress counter
+        print(f"Simulation is at {i} of {len(number_of_particles)}",end="\r")
 
 def plotting():
     """
@@ -67,4 +79,5 @@ def plotting():
     plt.ylabel("Problem in the key detection rate ", fontsize=20)
     plt.show()
 
+simulate_multiple()
 plotting()
