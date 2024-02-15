@@ -1,5 +1,5 @@
 """
-This module cointains all the functions to simulate the BB84 protocol
+This module contains all the functions to simulate the BB84 protocol.
 """
 import random
 import math
@@ -286,4 +286,10 @@ def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
     intereference = compare_keys(shared_bases, sender_result, receiver_result)
     #return true if there was interference, otherwise return false
     return intereference
-run()
+
+def main():
+    "Run the simulation"
+    run()
+
+if __name__ == "__main__":
+    main()
