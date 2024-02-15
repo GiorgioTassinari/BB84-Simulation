@@ -1,6 +1,8 @@
 """
 This module contains functions to launch the simulation multiple times
-to find and graph some values
+to find and to to draw a graph plotting the number of particles used and
+the rate of detecting a mistake in the key, either caused by a lack of
+bits to compare or by detection of an eavesdropper.
 """
 import os
 import sys
@@ -38,6 +40,9 @@ def simulate_fixed(number_of_runs, particles):
         failure_rate : float
             The rate of eavesdropping/failures detected by the different
             runs of the simulation over the total number of runs done.
+            With high number of particles the failures are cause by the
+            dection of an eavesdropper. Failures with very low number of
+            particles are caused by the inability to compare the keys.
     """
     number_of_detections = 0
     for _ in range(number_of_runs):
@@ -56,7 +61,7 @@ def plotting():
     Function that plots the chosen number of paricles on the x axis and
     the detection rate of problems in the key on the y axis.
     """
-    p = plt.figure(figsize=(12,9))
+    plt.figure(figsize=(12,9))
     plt.scatter(number_of_particles, failure_rates, s=40)
     plt.xlabel("Number of particles used", fontsize=20)
     plt.ylabel("Problem in the key detection rate ", fontsize=20)
