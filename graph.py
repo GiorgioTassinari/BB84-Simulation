@@ -26,9 +26,11 @@ number_of_particles = list(range(1,PARTICLE_NUMBER_UPPER_RANGE))
 
 class HiddenPrints:
     """Class to hide the printing done by the simulation runs"""
+    def __init__(self):
+        self._original_stdout = None
     def __enter__(self):
         self._original_stdout = sys.stdout
-        sys.stdout = open(os.devnull, 'w')
+        sys.stdout = open(os.devnull, 'w',encoding='utf-8')
     def __exit__(self, exc_type, exc_val, exc_tb):
         sys.stdout.close()
         sys.stdout = self._original_stdout
