@@ -207,7 +207,7 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     chosen_bits = random.sample(shared_indexes,samples_number)
     chosen_bits.sort()
     print(f"The sender and the receiver decided to take {percentage*100}% of "
-          f"the bits of their key to check for eaversdroppers. The sample is "
+          f"the bits of their key to check for eaversdroppers.\nThe sample is "
           f"done randomly and contains {samples_number} out of "
           f"{len(shared_indexes)} bits of the complete key.")
     #maximum possible number of matches of the selected bits
@@ -217,21 +217,26 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     #index used looping over the list of bits
     a = 0
     for i,_ in enumerate(sender_values):
-        if i==chosen_bits[a] and sender_values[i] == receiver_values[i]:
-            matches += 1
+        if i==chosen_bits[a]:
             #this allows to continue looping on the list of indexes
             a += 1
-            #to avoid going of bounds in the chosen_bits list
-            if matches == max_matches:
+            #to avoid out of bounds in the list chosen_bits
+            if a == len(chosen_bits):
+                #check it there is a match one last time
+                if sender_values[i] == receiver_values[i]:
+                    matches += 1
                 break
+            #check the match
+            if sender_values[i] == receiver_values[i]:
+                matches += 1
     matching_percentage = matches/max_matches
     print(f"The matching percentage between the two results is "
           f"{matching_percentage*100}""%")
     #once the comparing is done, we see if we are satisfied with the key
     if math.isclose(matching_percentage,1):
-        print("There were no eavesdroppers nor quantum mistakes!")
+        print(f"{Colors.BLUE}There were no eavesdroppers nor quantum mistakes!")
     else:
-        print("There were too many mistakes, somebody eavesdropped!")
+        print(f"{Colors.YELLOW}There were too many mistakes, somebody eavesdropped!")
     return
 
 def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
