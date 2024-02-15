@@ -236,9 +236,11 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
           f"{matching_percentage*100}""%")
     #once the comparing is done, we see if we are satisfied with the key
     if math.isclose(matching_percentage,1):
-        print(f"{Colors.BLUE}There were no eavesdroppers nor quantum mistakes!")
+        print(f"{Colors.BLUE}There were no eavesdroppers nor quantum "
+              f"mistakes!")
     else:
-        print(f"{Colors.YELLOW}There were too many mistakes, somebody eavesdropped!")
+        print(f"{Colors.YELLOW}There were too many mistakes, somebody "
+              f"eavesdropped!")
     return
 
 def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
