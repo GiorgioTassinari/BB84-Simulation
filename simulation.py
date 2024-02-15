@@ -203,11 +203,17 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
         bool
             True is there was interefece and the key don't match, False
             if there was no interference (100% matching rate).
+            Also returns True is the keys was too small and it made
+            comparing impossible.
     """
     sender_values = sender.value
     receiver_values = receiver.value
     #the shared indexes get randomly selected to be shared
     samples_number = round(percentage*len(shared_indexes))
+    #if the key was too small with no bits in sample, return true
+    if samples_number == 0:
+        print("There were not enought bits to make a key")
+        return True
     chosen_bits = random.sample(shared_indexes,samples_number)
     chosen_bits.sort()
     print(f"The sender and the receiver decided to take {percentage*100}% of "
@@ -239,10 +245,10 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     #once the comparing is done, we see if we are satisfied with the key
     if math.isclose(matching_percentage,1):
         print(f"{Colors.BLUE}There were no eavesdroppers nor quantum "
-              f"mistakes!")
+              f"mistakes!{Colors.END}")
         return False #no eavesdroppers
     print(f"{Colors.YELLOW}There were too many mistakes, somebody "
-          f"eavesdropped!")
+          f"eavesdropped!{Colors.END}")
     return True #eavesdroppers
 
 def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
