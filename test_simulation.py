@@ -22,3 +22,13 @@ def test_randomly_choose_bases(l):
         assert len(base_choices) == l
         #Test that the bases cointain only X or Z
         assert (all(flag in ('X','Z') for flag in base_choices))
+
+@given(st.integers(-10000,10000),st.text())
+def test_preparation(n,name):
+    """Test on the random initial preparation of the state"""
+    state = simulation.prepare_particles(n,name)
+    #Test if there is an equal number of bases and values
+    assert len(state.value)==len(state.base)
+    if n>0:
+        #Test if the lenght of the state values is correct
+        assert len(state.value)==n
