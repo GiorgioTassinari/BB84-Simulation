@@ -35,7 +35,10 @@ def test_preparation(n,name):
 
 @given(st.integers(-1000,1000),st.text())
 def test_receive_particles(n,name):
-    """Test for the function that emulates a measurement"""
+    """
+    Test for the function that emulates a measurement. It's checked that
+    a random measurement done a state results in a different state.
+    """
     #Prepare a state
     state = simulation.prepare_particles(n,name)
     #Measure the state
@@ -46,7 +49,11 @@ def test_receive_particles(n,name):
 @given(st.integers(0,1000),st.text())
 @settings(max_examples = 50)
 def test_compare_bases(n,name):
-    """Test for the function that compares two bases"""
+    """
+    Test for the function that compares two bases. Two different states
+    are prepared by 'prepare_particles'. The first state prepared is
+    compared with itself, and then with the second state.
+    """
     #Prepare two random states
     state_1 = simulation.prepare_particles(n,name)
     state_2 = simulation.prepare_particles(n,name)
@@ -63,11 +70,12 @@ def test_compare_bases(n,name):
 
 @given(st.integers(1,100))
 def test_compare_keys(n):
-    """Test for the final function that compares the keys"""
+    """
+    Test for the final function that compares the keys.
+    The simulation is run, 'run' returns the result of 'compare_keys'.
+    When eavesdropping is False, both 'compare_keys' and 'run' should 
+    return False.
+    """
     #Test if with no eavesdropping the simulation detect no interference
     there_was_interference = simulation.run(n,eavesdropping=False)
     assert not there_was_interference
-
-    #Test if with eavesdropping the simulation detects the interference
-    #there_was_interference = simulation.run(n,eavesdropping=True)
-    #assert there_was_interference
