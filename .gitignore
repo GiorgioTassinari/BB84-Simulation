@@ -1,0 +1,4 @@
+#examples made by hypothesis
+.hypothesis
+#pytest cache 
+__pycache__
