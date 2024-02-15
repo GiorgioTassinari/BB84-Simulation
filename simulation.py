@@ -58,6 +58,8 @@ def random_preparation(l):
     result_list: list
         A series of random 1s and 0s
     """
+    if l<0:
+        return []
     result_list=randint(0,2,l)
     return result_list
 
@@ -214,11 +216,11 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     max_matches=len(chosen_bits)
     #this will incrase by one every time a match is found
     matches = 0
-    #index used looping over the list of bits
+    #index used to loop over the list of indexes
     a = 0
     for i,_ in enumerate(sender_values):
         if i==chosen_bits[a]:
-            #this allows to continue looping on the list of indexes
+            #check the next index on the next iteration
             a += 1
             #to avoid out of bounds in the list chosen_bits
             if a == len(chosen_bits):
@@ -271,5 +273,4 @@ def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
     shared_bases = compare_bases(sender_result,receiver_result)
     #then they also compare a certain number of random bits of the key
     compare_keys(shared_bases, sender_result, receiver_result)
-    
 run()

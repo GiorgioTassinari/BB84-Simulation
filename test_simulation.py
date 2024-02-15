@@ -1,20 +1,24 @@
 """
-Module that contains tests
+Module that contains tests for the functions in the simulation.
+Some of the strategies used in the tests only considers ints between a 
+limited range with less max examples and higher deadline than default 
+because the test freezes or reports unwanted timeout failures otherwise.
 """
 import datetime
 from hypothesis import settings, given, strategies as st
 import simulation
 
-@given(st.integers(-10000,10000))
+@given(st.integers(-1000,1000))
 @settings(max_examples = 50, deadline=datetime.timedelta(milliseconds=300))
 def test_randomly_choose_bases(l):
-    """testing that the function returns something"""
+    """
+    Test the function that randomly choses a base.
+    """
     base_choices = simulation.randomly_choose_bases(l)
+    #Test that the function doesn't crash and instead returns something
     assert base_choices is not None
-
-@given(st.integers(0,10000))
-@settings(max_examples = 50, deadline=datetime.timedelta(milliseconds=300))
-def test_randomly_choose_bases_positive(l):
-    """testing the lenght of the chosen base is as intended"""
-    base_choices = simulation.randomly_choose_bases(l)
-    assert len(base_choices) == l
+    if l>0:
+        #Test that the lenght of the chosen base is as intended
+        assert len(base_choices) == l
+        #Test that the bases cointain only X or Z
+        assert (all(flag in ('X','Z') for flag in base_choices))
