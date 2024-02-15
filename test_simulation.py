@@ -32,3 +32,13 @@ def test_preparation(n,name):
     if n>0:
         #Test if the lenght of the state values is correct
         assert len(state.value)==n
+
+@given(st.integers(-1000,1000),st.text())
+def test_receive_particles(n,name):
+    """Test for the function that emulates a measurement"""
+    #Prepare a state
+    state = simulation.prepare_particles(n,name)
+    #Measure the state
+    state_after_measure = simulation.receive_particles(state,name)
+    #Test if the state changed, as it should
+    assert state_after_measure is not state
