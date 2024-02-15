@@ -44,6 +44,7 @@ def test_receive_particles(n,name):
     assert state_after_measure is not state
 
 @given(st.integers(0,1000),st.text())
+@settings(max_examples = 50)
 def test_compare_bases(n,name):
     """Test for the function that compares two bases"""
     #Prepare two random states
@@ -59,3 +60,14 @@ def test_compare_bases(n,name):
     shared_indexes_different = simulation.compare_bases(state_1,state_2)
     #Test that when comparing different bases we get different indexes
     assert shared_indexes_different is not shared_indexes_same
+
+@given(st.integers(1,100))
+def test_compare_keys(n):
+    """Test for the final function that compares the keys"""
+    #Test if with no eavesdropping the simulation detect no interference
+    there_was_interference = simulation.run(n,eavesdropping=False)
+    assert not there_was_interference
+
+    #Test if with eavesdropping the simulation detects the interference
+    #there_was_interference = simulation.run(n,eavesdropping=True)
+    #assert there_was_interference

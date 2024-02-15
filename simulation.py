@@ -200,7 +200,9 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
 
     Returns
     -------
-        None
+        bool
+            True is there was interefece and the key don't match, False
+            if there was no interference (100% matching rate).
     """
     sender_values = sender.value
     receiver_values = receiver.value
@@ -238,10 +240,10 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     if math.isclose(matching_percentage,1):
         print(f"{Colors.BLUE}There were no eavesdroppers nor quantum "
               f"mistakes!")
-    else:
-        print(f"{Colors.YELLOW}There were too many mistakes, somebody "
-              f"eavesdropped!")
-    return
+        return False #no eavesdroppers
+    print(f"{Colors.YELLOW}There were too many mistakes, somebody "
+          f"eavesdropped!")
+    return True #eavesdroppers
 
 def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
         eavesdropping=False):
@@ -263,7 +265,8 @@ def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
 
     Returns
     -------
-        None
+        intereference : bool
+            Is true if there was some interference, otherwise it's false
     """
     sender_result=prepare_particles(n,sender)
     eavsdropper_result=receive_particles(sender_result, eavesdropper)
@@ -274,5 +277,7 @@ def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
     #after the measurements are done, Alice and Bob share their bases
     shared_bases = compare_bases(sender_result,receiver_result)
     #then they also compare a certain number of random bits of the key
-    compare_keys(shared_bases, sender_result, receiver_result)
+    intereference = compare_keys(shared_bases, sender_result, receiver_result)
+    #return true if there was interference, otherwise return false
+    return intereference
 run()
