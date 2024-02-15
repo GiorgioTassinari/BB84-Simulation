@@ -6,19 +6,16 @@ import math
 from numpy.random import randint
 import pandas as pd
 
-#changes a setting in pandas to show a long dataframe without newlines
-pd.set_option('display.expand_frame_repr', False)
-
 #To highlight matches in pairs of bases, different colors are useful
-class Colors:
-    """Class that contains colors used in printing for visual clarity"""
-    BLUE = '\033[94m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    END = '\033[0m' #Turns coloring of text off, resetting to default
+Colors ={
+    'BLUE': '\033[94m',
+    'GREEN': '\033[92m',
+    'YELLOW': '\033[93m',
+    'RED': '\033[91m',
+    'END': '\033[0m', #Turns coloring of text off, resetting to default
+}
 
-#While doing a measurement in this protocol the bases are chose randomly
+#Doing a measurement with this protocol the bases are chosen randomly
 def randomly_choose_bases(l):
     """
     Create a sequence of random choices of orthogonal bases (X or Z) for
@@ -63,6 +60,7 @@ def random_preparation(l):
     result_list=randint(0,2,l)
     return result_list
 
+#Combine random base choices and random measurements
 def prepare_particles(n, name):
     """
     Runs the operations of the first person who prepares the states,
@@ -89,10 +87,11 @@ def prepare_particles(n, name):
                                   columns=['base', 'value'])
     print(name,"chose a random sequence of orthogonal bases and prepared the "
           "states with these values")
-    #transpose shows the result horizontally, making it more readable
+    #Transpose shows the result horizontally, making it more readable
     print(prepared_state.transpose())
     return prepared_state
 
+#Measurement done by either the receiver or the eavesdropper
 def receive_particles(received_states, name):
     """
     Runs the operations of a person who receives an already prepared 
@@ -111,16 +110,16 @@ def receive_particles(received_states, name):
     prepared_state: DataFrame
         The result of the measurement
     """
-    n = len(received_states.index) #number of particles received
+    n = len(received_states.index) #Number of particles received
     #Person chooses random bases for measurement
     bases = randomly_choose_bases(n)
     values = []
     for i in range(n):
-        #when the base chosen by the receiver matches the one chosen
-        #by the sender, the result is the same because of entanglement
+        #When the base chosen by the receiver matches the one chosen by
+        #the sender, the result should be the same because entangled
         if bases[i]==received_states.base[i]:
             values.append(received_states.value[i])
-        #if the base chosen is different, the result will be random
+        #If the base chosen is different, the result will be random
         else: values.append(randint(0,2))
     result = pd.DataFrame({'base': bases, 'value': values},
                           columns=['base', 'value'])
@@ -129,6 +128,7 @@ def receive_particles(received_states, name):
     print(result.transpose())
     return result
 
+#The base comparison between sender and receiver is done publicly
 def compare_bases(result_1,result_2):
     """
     Compares two sets of bases and visually highlights the values that
@@ -151,34 +151,38 @@ def compare_bases(result_1,result_2):
     """
     base_1=result_1.base
     base_2=result_2.base
-    #shared results, equal if there are no errors or eavesdroppers
+    #Shared results, equal if there are no errors or eavesdroppers
     shared_data = []
-    #contains the indexes of shared results, to check for errors
+    #Contains the indexes of shared results, to check for errors later
     shared_data_indexes = []
     print("The measurements done on the same bases are highlighted in green")
     for i,letter in enumerate(base_1):
         if base_1[i]==base_2[i]:
-            #when there is a match it gets added it to the shared lists
+            #When there is a match it gets added it to the shared lists
+            #The results should match too, so result_1.iloc[i] or
+            #result_2.iloc[i] should match too. The actual matching is
+            #checked later, shared_data is just for visualization.
             shared_data.append(result_1.iloc[i].tolist())
             shared_data_indexes.append(result_1.index[i])
-            print(f"{Colors.GREEN}"+letter,end="")
+            print(f"{Colors['GREEN']}"+letter,end="")
         else:
-            print(f"{Colors.RED}"+letter,end="")
+            print(f"{Colors['RED']}"+letter,end="")
     print("")
     for i,letter in enumerate(base_2):
         if base_1[i]==base_2[i]:
-            print(f"{Colors.GREEN}"+letter,end="")
+            print(f"{Colors['GREEN']}"+letter,end="")
         else:
-            print(f"{Colors.RED}"+letter,end="")
-    print(f"{Colors.END}",end="")
+            print(f"{Colors['RED']}"+letter,end="")
+    print(f"{Colors['END']}",end="")
     print("")
-    #create a DataFrame of the results on the shared bases
+    #Create a DataFrame to show the results on the shared bases
     shared_bases=pd.DataFrame(shared_data, columns=['bases', 'key'])
     print("Now A and B should have a shared key based on the shared bases")
     print(f"The key is {len(shared_data_indexes)} bits long")
     print(shared_bases.set_index('bases').transpose())
     return shared_data_indexes
 
+#The final step of the protocol, comparing publicly half the bits
 def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     """
     Compare the values of the measurements done in the specified
@@ -208,9 +212,9 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
     """
     sender_values = sender.value
     receiver_values = receiver.value
-    #the shared indexes get randomly selected to be shared
+    #The shared indexes get randomly selected to be shared
     samples_number = round(percentage*len(shared_indexes))
-    #if the key was too small with no bits in sample, return true
+    #If the key was too small with no bits in sample, return true
     if samples_number == 0:
         print("There were not enought bits to make a key")
         return True
@@ -220,36 +224,36 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
           f"the bits of their key to check for eaversdroppers.\nThe sample is "
           f"done randomly and contains {samples_number} out of "
           f"{len(shared_indexes)} bits of the complete key.")
-    #maximum possible number of matches of the selected bits
+    #Maximum possible number of matches of the selected bits
     max_matches=len(chosen_bits)
-    #this will incrase by one every time a match is found
+    #This will incrase by one every time a match is found
     matches = 0
-    #index used to loop over the list of indexes
+    #Index used to loop over the list of indexes
     a = 0
     for i,_ in enumerate(sender_values):
         if i==chosen_bits[a]:
-            #check the next index on the next iteration
+            #Check the next index on the next iteration
             a += 1
-            #to avoid out of bounds in the list chosen_bits
+            #To avoid out of bounds in the list chosen_bits
             if a == len(chosen_bits):
-                #check it there is a match one last time
+                #Check it there is a match one last time
                 if sender_values[i] == receiver_values[i]:
                     matches += 1
                 break
-            #check the match
+            #Check the match
             if sender_values[i] == receiver_values[i]:
                 matches += 1
     matching_percentage = matches/max_matches
     print(f"The matching percentage between the two results is "
           f"{matching_percentage*100}""%")
-    #once the comparing is done, we see if we are satisfied with the key
+    #Once the comparing is done, we see if we are satisfied with the key
     if math.isclose(matching_percentage,1):
-        print(f"{Colors.BLUE}There were no eavesdroppers nor quantum "
-              f"mistakes!{Colors.END}")
-        return False #no eavesdroppers
-    print(f"{Colors.YELLOW}There were too many mistakes, somebody "
-          f"eavesdropped!{Colors.END}")
-    return True #eavesdroppers
+        print(f"{Colors['BLUE']}There were no eavesdroppers nor quantum "
+              f"mistakes!{Colors['END']}")
+        return False #No eavesdroppers
+    print(f"{Colors['YELLOW']}There were too many mistakes, somebody "
+          f"eavesdropped!{Colors['END']}")
+    return True #Eavesdroppers
 
 def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
         eavesdropping=False):
@@ -280,15 +284,17 @@ def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
         receiver_result=receive_particles(sender_result, receiver)
     elif eavesdropping is True:
         receiver_result=receive_particles(eavsdropper_result, receiver)
-    #after the measurements are done, Alice and Bob share their bases
+    #After the measurements are done, Alice and Bob share their bases
     shared_bases = compare_bases(sender_result,receiver_result)
-    #then they also compare a certain number of random bits of the key
+    #Then they also compare a certain number of random bits of the key
     intereference = compare_keys(shared_bases, sender_result, receiver_result)
-    #return true if there was interference, otherwise return false
+    #Return true if there was interference, otherwise return false
     return intereference
 
 def main():
-    "Run the simulation"
+    """Run the simulation"""
+    #Change a pandas setting to show a long dataframe without newlines
+    pd.set_option('display.expand_frame_repr', False)
     run()
 
 if __name__ == "__main__":
