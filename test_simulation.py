@@ -42,3 +42,20 @@ def test_receive_particles(n,name):
     state_after_measure = simulation.receive_particles(state,name)
     #Test if the state changed, as it should
     assert state_after_measure is not state
+
+@given(st.integers(0,1000),st.text())
+def test_compare_bases(n,name):
+    """Test for the function that compares two bases"""
+    #Prepare two random states
+    state_1 = simulation.prepare_particles(n,name)
+    state_2 = simulation.prepare_particles(n,name)
+    #Compare the same base
+    shared_indexes_same = simulation.compare_bases(state_1,state_1)
+    #Test that a base compared with itself return same amount of indexes
+    assert len(shared_indexes_same) == n
+    if n!=0:
+        #Test that a base compared with itself returns all the indexes
+        assert shared_indexes_same == list(range(0,n))
+    shared_indexes_different = simulation.compare_bases(state_1,state_2)
+    #Test that when comparing different bases we get different indexes
+    assert shared_indexes_different is not shared_indexes_same
