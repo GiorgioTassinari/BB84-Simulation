@@ -37,12 +37,15 @@ For example, with the following command it's possible to run the simulation usin
 python -c 'import simulation; simulation.run(n=10)'
 ```
 **What interesting parameters can be chosen**
-- The 'run' function in the 'simulation.py' file takes 5 optional parameters
+- The 'run' function in the [simulation.py](https://github.com/GiorgioTassinari/BB84-Simulation/blob/main/simulation.py) file takes 5 optional parameters
     - <u>n</u>: integer that defaults to 1000, is the number of particles that will be sent between Alice and Bob to create the key. Is expected to be positive.
     - <u>sender</u>: string that defaults to "Alice", can change the name used during printing on the terminal for the sender
     - <u>receiver</u>: string that defaults to "Bob", changes the name in the same way for the receiver
     - <u>eavesdropper</u>: string that defaults to "Eve", changes the name in the same way for the eavesdropper
     - <u>eavesdropping</u>: bool that defaults to False, is the value that determines whether or not Eve is present in the simulation. If this value is kept False, the simulation ends in success, since Alice and Bob create a safe shared key without intrusions. If it's set to True, during the key comparison they will probably notice Eve's eavesdropping, if the number of particles used is sufficiently high.
-- The 'simulate_and_graph' function in the 'graph.py' file takes 2 optional parameters
+- The 'simulate_and_graph' function in the [graph.py](https://github.com/GiorgioTassinari/BB84-Simulation/blob/main/graph.py) file takes 2 optional parameters
     - <u>runs</u>: int that defaults to 5, how many times the simulation will be run each time to calculate a key problem detection rate. The higher this value, the more accurate the detection rate will be. It will also slow down the calculation because the simulations will have to be repeated 'runs' time each.
     - <u>particle_max</u>: int that defaults to 100, is the max range of particles used on the repeated simulations. The first simulation will use only 1 particle, then the next one will use one more, up to the value of 'particle_max'. A value between 50 and 100 is recommended, because a lower value will not show the detection rate reach 1, and a higher value will slow down the simulation significantly without any substantial advantage as the detection rate already reached 1. It's possible to have high value for 'runs' and a lower value for 'particle_max' to see a more accurate initial curve.
+
+**An example of a graph done with default settings**
+![graph_example](./images/example_output.png)
