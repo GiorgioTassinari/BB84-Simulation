@@ -10,3 +10,30 @@ For spin 1/2 particles, the particles separate into two discrete streams, one de
 After completing the measurements, they publicly share whith each other the complete list of bases used for the measurements. Comparing these, the keep only those values for which their bases were the same. This new and shorter list of bits is going to be their shared key. Alice and Bob then exchange a certain number of random bits of their key to check for errors. If there is no error, everything went correctly, and they use some cryprographic tecnique to share their message using the shared key known only to them.
 
 If they found errors the key is not safe because it means someone eavesdropped. This person, let's call her Eve, tried to intercept the particles with her own Stern-Gerlach apparatus. She puts herself between Alice and Bob to incercept the key, but she doesn't know what bases Alice or Bob are choosing, so she can only guess. When she guesses wrong, the direction of the spin of the particle changes. So, when Bob does his measurement, it's possibile that he chooses the same base as Alice, but not the same as Eve. In doing so, he now only has a 50% chance of getting the same result as Alice. The other 50% of the time there is a mismatch between the results of the mearument done by Alice and Bob, and they can infer someone is eavesdropping, therefore they will not use the key which is not safe.
+
+# How to use the simulation
+Required packages:
+- [simulation.py](https://github.com/GiorgioTassinari/BB84-Simulation/blob/main/simulation.py) : numpy, pandas
+- [graph.py](https://github.com/GiorgioTassinari/BB84-Simulation/blob/main/graph.py) : matplotlib
+- [test_simulation.py](https://github.com/GiorgioTassinari/BB84-Simulation/blob/main/test_simulation.py) : hypothesis
+
+What to do
+
+0) Have Python installed on your sistem. If you don't, refer to [here](https://www.python.org/downloads/)
+1) Download the files you want to use from the repository. The more interesting ones are [simulation.py](https://github.com/GiorgioTassinari/BB84-Simulation/blob/main/simulation.py) and [graph.py](https://github.com/GiorgioTassinari/BB84-Simulation/blob/main/graph.py)
+2) Verify that you have the required packages to run the files you want to use. If you don't have them, you can install them by using the following command on your terminal, then changing numpy with the name of the others packages you need
+```console
+pip install numpy
+```
+3) Use the command cd of the terminal for accessing the folder where you downloaded the files. Now the following command you can run the files
+```console
+python simulation.py
+```
+4) Try both the simulation and the graph. They run with default parameters and explain themselves what they're doing
+5) If you want to run specific functions or to run the simulation with different paramaters, you can diretly call specific functions using the -c argument.\
+For example with the following command it's possible to run the simulation using only 10 particles for creating the key
+
+```console
+python -c 'import simulation; simulation.run(n=10)'
+```
+6) 
