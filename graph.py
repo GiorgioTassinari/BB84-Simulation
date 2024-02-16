@@ -14,16 +14,6 @@ import sys
 import matplotlib.pyplot as plt
 import simulation
 
-#How many time each simulation will be run to calculate the failure rate
-NUMBER_OF_RUNS = 5
-#The number of particles used the last batch of simulation runs
-PARTICLE_NUMBER_UPPER_RANGE = 100
-
-#List to contain all the failing rates calculated by each mutilpe run
-failure_rates = []
-#List to store the number of particles used in each run of simulation
-number_of_particles = list(range(1,PARTICLE_NUMBER_UPPER_RANGE))
-
 class HiddenPrints:
     """Class to hide the printing done by the simulation runs"""
     def __init__(self):
@@ -67,25 +57,49 @@ def simulate_fixed(number_of_runs, particles):
     failure_rate=number_of_detections/number_of_runs
     return failure_rate
 
-def simulate_multiple():
+def simulate_multiple(number_of_runs,number_of_particles):
     """
-    Run the simulation multiple times based on the 'NUMBER_OF_RUNS'
-    global variable, increasing the number of particles used in the
-    simulation by one each time starting from 1 up to
-    PARTICLE_NUMBER_UPPER_RANGE.
-    Updates the 'failure_rates' public list with the results of each
-    simulation.
+    Run the simulation multiple times, increasing the number of
+    particles used in each successive simulation by one each time, up to
+    number_of_particles
+
+    Parameters
+    ----------
+        number_of_runs : int
+            The number of times each instance of simulation will run
+        number_of_particles : list
+            The list containing all the numbers of particles used in
+            each successive simulation
+    Returns
+    -------
+        failure_rates: list
+            A list containing each failure rate measured by each
+            execution of the simulation
     """
+    #List to contain all the failing rates calculated by each mutilpe run
+    failure_rates = []
     for i,number in enumerate(number_of_particles):
-        failure_rates.append(simulate_fixed(NUMBER_OF_RUNS,number))
-        #progress counter
+        failure_rates.append(simulate_fixed(number_of_runs,number))
+        #Progress counter
         print(f"Executing simulation {i} out of {len(number_of_particles)}",
               end="\r")
+    return failure_rates
 
-def plotting():
+def plotting(number_of_particles,failure_rates):
     """
     Function that plots the chosen number of paricles on the x axis and
     the detection rate of problems on the y axis.
+    Parameters
+    ----------
+        number_of_particles: list
+            The number of particles used in each run of the simulation,
+            becomes the x axis
+        failure_rates : list
+            The failure rate calculated in each run of the simulation,
+            becomes the y axis
+    Returns
+    -------
+        None
     """
     plt.figure(figsize=(12,9))
     plt.scatter(number_of_particles, failure_rates, s=40)
@@ -93,5 +107,32 @@ def plotting():
     plt.ylabel("Problem in the key detection rate ", fontsize=20)
     plt.show()
 
-simulate_multiple()
-plotting()
+def simulate_and_graph(runs=5,particle_max=100):
+    """
+    Run the simulation how many times as wanted, and then graph it
+
+    Parameters
+    ----------
+        runs : int, optional
+            The number of times each simution is going to run, default 5
+        particle_max : int, optional
+            Each successive run will increase the number of particles
+            sent by 1, starting from 1 and ending with this value,
+            default 100
+    Returns
+    -------
+        None
+    """
+    #List to contain all the failing rates calculated by each mutilpe run
+    failure_rates = []
+    #List to store the number of particles used in each run of simulation
+    number_of_particles = list(range(1,particle_max))
+    failure_rates = simulate_multiple(runs,number_of_particles)
+    plotting(number_of_particles,failure_rates)
+
+def main():
+    """Run the simulations and the graphing"""
+    simulate_and_graph()
+
+if __name__ == "__main__":
+    main()
