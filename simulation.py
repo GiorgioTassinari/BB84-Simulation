@@ -16,14 +16,14 @@ Colors ={
 }
 
 #Doing a measurement with this protocol the bases are chosen randomly
-def randomly_choose_bases(l):
+def randomly_choose_bases(bases_lenght):
     """
     Create a sequence of random choices of orthogonal bases (X or Z) for
     the quantum measurement.
 
     Parameters
     ----------
-    l : integer
+    bases_lenght : integer
         Specifies the number of bases that will be chosen
 
     Returns
@@ -32,7 +32,7 @@ def randomly_choose_bases(l):
         A series with lenght l of random Xs and Zs 
     """
     result_string = []
-    for _ in range(l):
+    for _ in range(bases_lenght):
         if randint(0,2)==0:
             result_string.append("X")
         else:
@@ -40,14 +40,14 @@ def randomly_choose_bases(l):
     return result_string
 
 #This this is the measurement done by the sender, who prepares the state
-def random_preparation(l):
+def random_preparation(state_lenght):
     """
     Emulates the results of a series of measurements done with random 
     bases on particles in a superposition of spin up and down.
 
     Parameters
     ----------
-    l : integer
+    state_lenght : integer
         Specifies the number of particles that are measured
 
     Returns
@@ -55,20 +55,20 @@ def random_preparation(l):
     result_list: list
         A series of random 1s and 0s
     """
-    if l<0:
+    if state_lenght<0:
         return []
-    result_list=randint(0,2,l)
+    result_list=randint(0,2,state_lenght)
     return result_list
 
 #Combine random base choices and random measurements
-def prepare_particles(n, name):
+def prepare_particles(n_particles, name):
     """
     Runs the operations of the first person who prepares the states,
     explaining and printing to terminal the result.
 
     Parameters
     ----------
-    n : integer
+    n_particles : integer
         Specifies the number of particles that will be prepared
     name : string, optional
         Name used in printing to describes who chose the bases
@@ -79,9 +79,9 @@ def prepare_particles(n, name):
         The result of the preparation of the entangled state
     """
     #Person chooses random bases for preparation
-    bases = randomly_choose_bases(n)
+    bases = randomly_choose_bases(n_particles)
     #Person measures qubits
-    values = random_preparation(n)
+    values = random_preparation(n_particles)
     #Bases chosen and values measured are paired in a dataframe
     prepared_state = pd.DataFrame({'base': bases, 'value': values},
                                   columns=['base', 'value'])
@@ -255,14 +255,14 @@ def compare_keys(shared_indexes, sender, receiver, percentage=0.5):
           f"eavesdropped!{Colors['END']}")
     return True #Eavesdroppers
 
-def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
+def run(n_particles=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
         eavesdropping=False):
     """
     Run the complete simulation.
     
     Parameters
     ----------
-        n : int, optional
+        n_particles : int, optional
             How many particles will be used
         sender : string, optional
             The name used in printing for the sender, default Alice
@@ -278,7 +278,7 @@ def run(n=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
         intereference : bool
             Is true if there was some interference, otherwise it's false
     """
-    sender_result=prepare_particles(n,sender)
+    sender_result=prepare_particles(n_particles,sender)
     eavsdropper_result=receive_particles(sender_result, eavesdropper)
     if eavesdropping is False:
         receiver_result=receive_particles(sender_result, receiver)

@@ -52,7 +52,7 @@ def simulate_fixed(number_of_runs, particles):
     number_of_detections = 0
     for _ in range(number_of_runs):
         with HiddenPrints(): #Mute the prints of the simulation
-            if simulation.run(n=particles, eavesdropping=True):
+            if simulation.run(n_particles=particles, eavesdropping=True):
                 number_of_detections += 1
     failure_rate=number_of_detections/number_of_runs
     return failure_rate

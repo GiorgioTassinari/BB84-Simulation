@@ -29,7 +29,7 @@ python -c 'import simulation; simulation.run(n=10)'
 ```
 **What interesting parameters can be chosen**
 - The 'run' function in the [simulation.py](https://github.com/GiorgioTassinari/BB84-Simulation/blob/main/simulation.py) file takes 5 optional parameters
-    - <u>n</u>: integer that defaults to 1000, is the number of particles that will be sent between Alice and Bob to create the key. Is expected to be positive.
+    - <u>n_particles</u>: integer that defaults to 1000, is the number of particles that will be sent between Alice and Bob to create the key. Is expected to be positive.
     - <u>sender</u>: string that defaults to "Alice", can change the name used during printing on the terminal for the sender
     - <u>receiver</u>: string that defaults to "Bob", changes the name in the same way for the receiver
     - <u>eavesdropper</u>: string that defaults to "Eve", changes the name in the same way for the eavesdropper
