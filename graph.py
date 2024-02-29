@@ -50,8 +50,8 @@ def simulate_fixed(number_of_runs, particles):
             particles are caused by the inability to compare the keys.
     """
     number_of_detections = 0
-    for _ in range(number_of_runs):
-        with HiddenPrints(): #Mute the prints of the simulation
+    with HiddenPrints(): #Mute the prints of the simulation
+        for _ in range(number_of_runs):
             if simulation.run(n_particles=particles, eavesdropping=True):
                 number_of_detections += 1
     failure_rate=number_of_detections/number_of_runs
