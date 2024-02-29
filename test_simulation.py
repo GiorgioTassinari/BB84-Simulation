@@ -77,3 +77,19 @@ def test_compare_keys_no_eve(n_particles,detection):
     #Test if with no eavesdropping the simulation detect no interference
     interference = simulation.run(n_particles,eavesdropping=False)
     assert interference == detection
+    
+@pytest.mark.parametrize(
+    "n_particles,detection",
+    [(2,True),(9,False),(100,True)]
+)
+def test_compare_keys_eve(n_particles,detection):
+    """
+    Test for the final function that compares the keys.
+    The simulation is run, 'run' returns the result of 'compare_keys'.
+    When eavesdropping is False, both 'compare_keys' and 'run' should 
+    return False.
+    """
+    seed(3)
+    #Test with eavesdropping that the simulation detects it
+    interference = simulation.run(n_particles,eavesdropping=True)
+    assert interference == detection
