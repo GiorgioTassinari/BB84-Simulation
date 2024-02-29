@@ -55,8 +55,6 @@ def random_preparation(state_lenght):
     result_list: list
         A series of random 1s and 0s
     """
-    if state_lenght<0:
-        return []
     result_list=randint(0,2,state_lenght)
     return result_list
 
@@ -277,6 +275,8 @@ def run(n_particles=1000, sender="Alice", receiver="Bob", eavesdropper="Eve",
         intereference : bool
             Is true if there was some interference, otherwise it's false
     """
+    if n_particles<1:
+        raise ValueError("Invalid number of particles, use at least 1")
     sender_result=prepare_particles(n_particles,sender)
     eavsdropper_result=receive_particles(sender_result, eavesdropper)
     if eavesdropping is False:
