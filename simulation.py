@@ -164,16 +164,15 @@ def compare_bases(result_1,result_2):
             #checked later, shared_data is just for visualization.
             shared_data.append(result_1.iloc[i].tolist())
             shared_data_indexes.append(result_1.index[i])
-            print(f"{Colors['GREEN']}"+letter,end="")
+            print(f"{Colors['GREEN']}"+letter+f"{Colors['END']}",end="")
         else:
-            print(f"{Colors['RED']}"+letter,end="")
+            print(f"{Colors['RED']}"+letter+f"{Colors['END']}",end="")
     print("")
     for i,letter in enumerate(base_2):
         if base_1[i]==base_2[i]:
-            print(f"{Colors['GREEN']}"+letter,end="")
+            print(f"{Colors['GREEN']}"+letter+f"{Colors['END']}",end="")
         else:
-            print(f"{Colors['RED']}"+letter,end="")
-    print(f"{Colors['END']}",end="")
+            print(f"{Colors['RED']}"+letter+f"{Colors['END']}",end="")
     print("")
     #Create a DataFrame to show the results on the shared bases
     shared_bases=pd.DataFrame(shared_data, columns=['bases', 'key'])
